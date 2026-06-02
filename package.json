@@ -1,0 +1,14 @@
+{
+  "name": "kairos-agent",
+  "version": "0.1.0",
+  "description": "Local-first coding agent platform with goal mode, guarded swarms, and smart model routing.",
+  "main": "src/kairos/cli.js",
+  "scripts": {
+    "kairos": "node src/kairos/cli.js",
+    "check": "node --check src/kairos/cli.js && node --check src/kairos/core/agents.js && node --check src/kairos/core/agent-loop.js && node --check src/kairos/core/agent-actions.js && node --check src/kairos/core/agent-execute.js && node --check src/kairos/core/agent-parse.js && node --check src/kairos/core/agent-prompts.js && node --check src/kairos/core/agent-validate.js && node --check src/kairos/core/brain.js && node --check src/kairos/core/builder.js && node --check src/kairos/core/chat.js && node --check src/kairos/core/context-index.js && node --check src/kairos/core/doctor.js && node --check src/kairos/core/env.js && node --check src/kairos/core/format.js && node --check src/kairos/core/goal-manager.js && node --check src/kairos/core/governor.js && node --check src/kairos/core/memory.js && node --check src/kairos/core/menu.js && node --check src/kairos/core/model-router.js && node --check src/kairos/core/paths.js && node --check src/kairos/core/provider-health.js && node --check src/kairos/core/providers.js && node --check src/kairos/core/safety.js && node --check src/kairos/core/sandbox.js && node --check src/kairos/core/self-improvement.js && node --check src/kairos/core/setup.js && node --check src/kairos/core/skills.js && node --check src/kairos/core/storage.js && node --check src/kairos/core/tool-log.js && node --check src/kairos/core/tools.js && node --check src/kairos/core/web-tools.js && node --check src/kairos/core/workspace-tools.js && node --check src/kairos/test/smoke.js && node --check src/kairos/test/brain-mock.js && node --check src/kairos/test/patch-and-stream.js && node --check src/kairos/test/tool-run-context.js",
+    "test": "node src/kairos/test/smoke.js && node src/kairos/test/brain-mock.js && node src/kairos/test/patch-and-stream.js && node src/kairos/test/tool-run-context.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
