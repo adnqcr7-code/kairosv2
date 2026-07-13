@@ -12,62 +12,11 @@ The long-term goal is to grow Kairos from a terminal-based MVP into a complete l
 
 ## Project Status
 
-**Kairos v2.2 - Production Ready**
+Kairos is currently in active development.
 
-Latest release includes 7 new core modules addressing architectural gaps identified in code review:
+This release should be treated as an early MVP. It can run local commands, manage goals, load skills, use provider configuration, store memory, and demonstrate guarded agent workflows.
 
-- ✅ Advanced semantic memory with retrieval-augmented generation
-- ✅ Adaptive model routing that learns from metrics
-- ✅ Multiple planning strategies (tree search, graph, Monte Carlo)
-- ✅ Automatic performance analytics and feedback
-- ✅ Safe version management and data migration
-- ✅ 31/31 tests passing - production verified
-
-This is stable, tested code ready for real use. No external dependencies. All data stays local.
-
----
-
-## Self-Improvement System (v2.2)
-
-New production modules addressing weak points from code review:
-
-**Advanced Memory** (`src/kairos/core/advanced-memory.js`)
-- Semantic indexing with word-frequency vectors
-- Retrieval-augmented generation (RAG) with cosine similarity
-- Three-tier memory: short-term (1hr), episodic (1wk), long-term (unlimited)
-- Automatic relevance decay per tier
-
-**Adaptive Routing** (`src/kairos/core/adaptive-routing.js`)
-- Performance-based model selection
-- Learns from every task (quality 40% + success 35% + speed 25%)
-- Confidence levels based on sample size (5+ metrics to activate)
-- Automatic alternative recommendations
-
-**Advanced Planning** (`src/kairos/core/advanced-planning.js`)
-- Tree search with configurable depth/branching
-- Graph planning with topological sort
-- Monte Carlo Tree Search with UCB1 balance
-- Dependency handling and multi-level decomposition
-
-**Analytics** (`src/kairos/core/analytics.js`)
-- Automatic performance metric collection
-- Model/task comparison dashboards
-- Input validation and sanitization
-
-**Feedback Engine** (`src/kairos/core/feedback-engine.js`)
-- Weekly/monthly self-improvement check-ins
-- Prioritized recommendations (high/medium/low impact)
-- Identifies best/worst performing models
-
-**Version Manager** (`src/kairos/core/version-manager.js`)
-- Safe version tracking and upgrades
-- Migration guides between versions
-- Rollback capability
-
-**Data Migration** (`src/kairos/core/data-migration.js`)
-- Full backup and restore
-- Import/export for data portability
-- Compatibility checking
+Some features are experimental, and internal APIs may change between versions.
 
 ---
 
@@ -136,24 +85,6 @@ Then you can search or view skills:
 npm.cmd run kairos -- skills search "model selector"
 npm.cmd run kairos -- skills show 01-coding:code-reviewer
 ```
-
-## Testing
-
-All core systems tested and verified:
-
-```powershell
-npm test
-```
-
-Results: **31/31 tests passing**
-
-- Analytics module
-- Advanced memory (semantic indexing)
-- Adaptive routing (performance learning)
-- Advanced planning (tree/graph/Monte Carlo)
-- Feedback engine (recommendations)
-- Version manager (safe upgrades)
-- Data migration (import/export)
 
 ---
 
