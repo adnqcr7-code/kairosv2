@@ -14,23 +14,27 @@ function ensureAnalyticsDir() {
   fs.mkdirSync(analyticsDir(), { recursive: true });
 }
 
+function sanitizeMetric(metric) {
+  return {
+    timestamp: metric.timestamp || new Date().toISOString(),
+    modelId: String(metric.modelId || 'unknown').slice(0, 50),
+    taskType: String(metric.taskType || 'unknown').slice(0, 30),
+    duration: Math.max(0, Number(metric.duration) || 0),
+    success: metric.success === true,
+    costEstimate: Math.max(0, Number(metric.costEstimate) || 0),
+    qualityScore: Math.max(0, Math.min(10, Number(metric.qualityScore) || 0)),
+    toolsUsed: Array.isArray(metric.toolsUsed) ? metric.toolsUsed.slice(0, 10) : [],
+    errorCode: metric.errorCode ? String(metric.errorCode).slice(0, 30) : null,
+    metadata: typeof metric.metadata === 'object' ? metric.metadata : {}
+  };
+}
+
 /**
  * Record a performance metric for a model/task combination
  */
 function recordMetric(data = {}) {
   ensureAnalyticsDir();
-  const metric = {
-    timestamp: new Date().toISOString(),
-    modelId: data.modelId,
-    taskType: data.taskType || 'unknown', // planning, coding, review, test, etc.
-    duration: data.duration, // ms
-    success: data.success !== false,
-    costEstimate: data.costEstimate || 0,
-    qualityScore: data.qualityScore || 0, // 0-10
-    toolsUsed: data.toolsUsed || [],
-    errorCode: data.errorCode || null,
-    metadata: data.metadata || {}
-  };
+  const metric = sanitizeMetric(data);
 
   fs.appendFileSync(analyticsDbPath(), `${JSON.stringify(metric)}\n`, 'utf8');
   return metric;

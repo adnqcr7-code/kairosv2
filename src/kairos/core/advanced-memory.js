@@ -85,21 +85,34 @@ function cosineSimilarity(vec1, vec2) {
  * Add memory entry to appropriate tier
  */
 function addMemory(entry, tier = 'shortTerm') {
+  if (!entry || !entry.content) {
+    return null;
+  }
+
   ensureAdvancedMemoryDir();
+
+  const validTiers = ['shortTerm', 'episodic', 'longTerm'];
+  const safeTier = validTiers.includes(tier) ? tier : 'episodic';
 
   const memory = {
     id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    tier,
+    tier: safeTier,
     timestamp: new Date().toISOString(),
-    content: entry.content || '',
-    metadata: entry.metadata || {},
-    vector: createSemanticVector(entry.content || ''),
+    content: String(entry.content).slice(0, 5000),
+    metadata: typeof entry.metadata === 'object' ? entry.metadata : {},
+    vector: createSemanticVector(entry.content),
     relevanceScore: 1.0,
     accessCount: 0,
     lastAccessed: new Date().toISOString()
   };
 
-  fs.appendFileSync(semanticIndexPath(), `${JSON.stringify(memory)}\n`, 'utf8');
+  try {
+    fs.appendFileSync(semanticIndexPath(), `${JSON.stringify(memory)}\n`, 'utf8');
+  } catch (error) {
+    console.error('Failed to write memory:', error.message);
+    return null;
+  }
+
   return memory;
 }
 
