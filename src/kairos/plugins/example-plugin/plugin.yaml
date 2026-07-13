@@ -1,0 +1,79 @@
+# Example Plugin for Kairos
+# This demonstrates the plugin manifest format
+
+name: example-plugin
+description: An example plugin demonstrating Kairos plugin capabilities
+version: 1.0.0
+author: kairos-team
+license: MIT
+homepage: https://github.com/adnqcr7-code/kairosv2
+repository: https://github.com/adnqcr7-code/kairosv2
+
+# Plugin type and capabilities
+type: tool
+capabilities:
+  - tools
+  - custom-commands
+
+# Entry point
+main: index.js
+
+# Configuration schema
+configSchema:
+  type: object
+  properties:
+    enabled:
+      type: boolean
+      description: Whether the plugin is enabled
+      default: true
+    
+    greeting:
+      type: string
+      description: Custom greeting message
+      default: "Hello from Example Plugin!"
+    
+    maxRetries:
+      type: number
+      description: Maximum number of retries for plugin operations
+      default: 3
+      minimum: 0
+      maximum: 10
+    
+    debug:
+      type: boolean
+      description: Enable debug logging
+      default: false
+
+# Default configuration
+defaults:
+  enabled: true
+  greeting: "Hello from Example Plugin!"
+  maxRetries: 3
+  debug: false
+
+# Dependencies
+# dependencies:
+#   plugins: []
+#   packages:
+#     lodash: ^4.17.21
+
+# Compatibility
+kairosVersion: 2.0.0
+minKairosVersion: 2.0.0
+
+# Metadata
+tags:
+  - example
+  - demo
+  - sample
+keywords:
+  - example
+  - plugin
+  - demonstration
+
+# Security
+permissions:
+  - memory:read
+  - tools:register
+  - commands:register
+sandboxed: false
