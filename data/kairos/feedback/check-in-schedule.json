@@ -1,0 +1,10 @@
+{
+  "lastWeeklyCheckIn": "2026-07-13T21:35:56.356Z",
+  "lastMonthlyCheckIn": null,
+  "nextWeeklyCheckIn": "2026-07-20T21:35:56.359Z",
+  "nextMonthlyCheckIn": "2026-08-12T21:35:33.141Z",
+  "checkInIntervalDays": {
+    "weekly": 7,
+    "monthly": 30
+  }
+}
