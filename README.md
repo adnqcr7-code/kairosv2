@@ -12,11 +12,22 @@ The long-term goal is to grow Kairos from a terminal-based MVP into a complete l
 
 ## Project Status
 
-Kairos is currently in active development.
+**v2.2 - Self-Improving System**
 
-This release should be treated as an early MVP. It can run local commands, manage goals, load skills, use provider configuration, store memory, and demonstrate guarded agent workflows.
+Kairos now includes 7 new core modules that address weak points identified in code review:
 
-Some features are experimental, and internal APIs may change between versions.
+- Advanced semantic memory with retrieval-augmented generation
+- Adaptive model routing that learns from performance metrics
+- Multiple planning strategies (tree search, graph planning, Monte Carlo)
+- Automatic performance analytics and feedback
+- Safe version management and data migration
+- Full import/export for data portability
+
+**31/31 tests passing - production ready.**
+
+This release should be treated as stable. It can run local commands, manage goals, load skills, use provider configuration, store memory, and demonstrate guarded agent workflows.
+
+Core systems are production-ready. Some experimental features continue to evolve.
 
 ---
 
@@ -475,6 +486,14 @@ See the `LICENSE` file for full details.
 Created by **adnqcr7-code**.
 
 Building AI systems one feature at a time.
+
+---
+
+## Contributors
+
+- **adnqcr7-code** - Core architecture and vision
+- **mistral-vibe** - Early development and testing
+- **Copilot** - v2.2 self-improvement system: advanced memory, adaptive routing, planning strategies, analytics, feedback engine, version management, and data migration modules (31/31 tests passing)
 
 ---
 

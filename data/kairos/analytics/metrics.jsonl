@@ -1,0 +1,3 @@
+{"timestamp":"2026-07-13T21:35:32.432Z","modelId":"test-model","taskType":"coding","duration":1000,"success":true,"costEstimate":0,"qualityScore":8.5,"toolsUsed":[],"errorCode":null,"metadata":{}}
+{"timestamp":"2026-07-13T21:35:53.965Z","modelId":"test-model","taskType":"coding","duration":1000,"success":true,"costEstimate":0,"qualityScore":8.5,"toolsUsed":[],"errorCode":null,"metadata":{}}
+{"timestamp":"2026-07-13T21:37:51.345Z","modelId":"test-model","taskType":"coding","duration":1000,"success":true,"costEstimate":0,"qualityScore":8.5,"toolsUsed":[],"errorCode":null,"metadata":{}}

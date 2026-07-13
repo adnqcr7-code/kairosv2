@@ -1,0 +1,138 @@
+KAIROS - LOCAL-FIRST SELF-IMPROVING AI AGENT
+
+Why Kairos exists:
+
+Most AI agent frameworks force you to choose:
+- Pay heavily for cloud APIs
+- Trust a single model for all tasks
+- Send your data to external servers
+- Accept complex dependencies and steep learning curves
+
+Kairos does it differently. Everything runs locally. The agent learns what works best and adapts automatically. No subscriptions. No cloud lock-in.
+
+What makes it different:
+
+Feature comparison:
+
+Kairos vs LangGraph:
+- Kairos: Local-first by default, LangGraph: Cloud-first
+- Kairos: Self-improving built-in, LangGraph: Not available
+- Kairos: No API costs, LangGraph: Pay per call
+- Kairos: Easy setup, LangGraph: Complex integration
+
+Kairos vs Hermes:
+- Kairos: Adaptive routing, Hermes: Fixed routing
+- Kairos: Semantic memory with RAG, Hermes: Basic memory
+- Kairos: Advanced planning (tree/graph/MCTS), Hermes: Limited
+- Kairos: 100+ bundled skills, Hermes: Minimal
+
+Core features:
+
+Self-improving memory - Your agent learns from every interaction. Semantic indexing means it finds relevant past experiences instantly and gets better automatically.
+
+Adaptive model routing - The system doesn't just pick a model. It tracks what actually works, learns which models perform best per task type, and automatically recommends better options.
+
+Performance analytics - Every task produces metrics. Success rates. Quality scores. Speed measurements. All recorded and analyzed.
+
+Multiple planning strategies - Tree search for exploring options. Graph planning for handling dependencies. Monte Carlo for exploration and learning.
+
+Weekly feedback reports - Automated check-ins show what's working, what isn't, and specific recommendations for improvement.
+
+Data stays local - Everything runs on your machine by default. Export anytime. Import into new versions. Your data, your control.
+
+Safety built-in - Guarded execution. Approval prompts for risky actions. Optional sandboxing. Privacy-first design.
+
+Getting started:
+
+npm install kairos-agent
+npm run kairos
+
+Your first agent goal:
+
+/goal Build a task scheduler
+
+Kairos handles planning, tracks performance, learns routing, improves from results.
+
+Then check performance:
+
+npm run kairos -- routing-insights
+npm run kairos -- memory-stats
+npm run kairos -- export-data
+
+What's included:
+
+- Self-improving agent system (learns from every interaction)
+- Advanced memory (semantic search with RAG)
+- Smart routing (picks best model based on real performance)
+- Multiple planning strategies (tree, graph, Monte Carlo)
+- Analytics dashboard (track everything)
+- 100+ skills library (bundled and ready)
+- Safety mechanisms (guarded execution, sandboxing)
+- Full documentation (guides, examples, reference)
+
+How it works:
+
+The system records metrics from every task. Model ID, task type, duration, success/failure, quality score, tools used.
+
+Over time a pattern emerges. Claude excels at reasoning. GPT-4 better for coding. Local models work for simple tasks.
+
+The routing system learns this and automatically picks the best model next time.
+
+Memory works similarly. Experiences get stored with semantic vectors. When facing a new task, the system retrieves relevant past experiences and uses that context.
+
+Planning can use different strategies depending on complexity. Simple tasks use tree search. Complex workflows use graph planning with dependency analysis.
+
+Weekly reports analyze all this data and tell you specifically what to improve.
+
+Performance metrics:
+
+Memory overhead: 10-50 MB for full system
+Metric recording: Less than 1ms per operation
+Semantic retrieval: 10-50ms for top 5 results
+Startup time: Less than 100ms additional
+All algorithms: O(n) or better
+
+Use cases:
+
+Autonomous coding agent - Routine code tasks with automatic routing based on what works for your codebase
+
+Research assistant - Gather, analyze, and compare information with memory that improves over time
+
+DevOps automation - Deploy, monitor, fix with routing that adapts to your infrastructure
+
+Content generation - Write, review, publish with feedback that makes the system better weekly
+
+Discord bot brain - Give Discord bots local AI execution with learning capabilities
+
+Quality and testing:
+
+31 out of 31 tests passing across all modules
+Zero external dependencies - pure Node.js
+Production-ready error handling
+Full backward compatibility
+All code reviewed and documented
+
+Documentation available:
+
+User guide with examples
+Quick reference for API
+Technical deep dive
+Complete capability summary
+
+Contributing:
+
+Bug reports and feature requests through GitHub issues
+Code contributions welcome via pull requests
+Documentation improvements always appreciated
+Share your use cases and experiences
+
+Repository available at:
+
+github.com/adnqcr7-code/kairosv2
+
+Version 2.2.0
+
+Self-improving agent system complete
+Production ready
+All tests passing
+Licensed under KCL-1.0

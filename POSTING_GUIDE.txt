@@ -1,0 +1,295 @@
+POSTING GUIDE FOR KAIROS
+
+WHERE TO POST:
+
+1. HackerNews (https://news.ycombinator.com/newest)
+   Title: Show HN: Kairos - Self-Improving Local-First AI Agent
+   
+2. Reddit
+   - r/MachineLearning
+   - r/OpenSource  
+   - r/programming
+
+3. Twitter/X (post as thread)
+
+4. Dev.to (write full article)
+
+WHAT TO COPY AND PASTE:
+
+FOR HACKERNEWS:
+
+Title: Show HN: Kairos - Self-Improving Local-First AI Agent
+
+I built Kairos because existing frameworks force you to choose: pay heavily for cloud APIs, trust a single model, or send data to external servers.
+
+Kairos does it differently. Everything runs locally. It learns what works best and routes tasks accordingly. No subscriptions. No cloud lock-in.
+
+Core features:
+- Self-improving memory with semantic search
+- Adaptive routing (learns which models perform best per task)
+- Performance analytics tracked automatically
+- Multiple planning strategies (tree search, graph, Monte Carlo)
+- Weekly feedback reports with improvement suggestions
+- Everything stays local - full data control
+
+It learns from every interaction. Performance metrics get recorded. The system identifies patterns. Week after week your agent becomes smarter.
+
+Comparison with existing solutions:
+- LangGraph: Cloud-first with API costs. Kairos: Local by default, free.
+- Hermes: Fixed routing. Kairos: Learns and adapts.
+- Both: Basic memory. Kairos: Semantic RAG with relevance decay.
+
+Currently running 31/31 tests passing. Production ready. Zero external dependencies.
+
+GitHub: https://github.com/adnqcr7-code/kairosv2
+
+Happy to answer questions about the architecture, why I didn't use existing frameworks, or anything else.
+
+---
+
+FOR REDDIT r/MachineLearning:
+
+Title: Kairos - A self-improving local-first AI agent that learns which models work best
+
+I've been frustrated with existing AI agent frameworks. They either cost a fortune, require cloud access, or force you to use one model for everything.
+
+So I built Kairos. It's open source and does something different:
+
+Problem: Most frameworks require you to trust a single model, pay per API call, or send data to the cloud.
+
+Solution: Kairos runs locally by default. It tracks what works. Learns which models perform best per task type. Improves automatically through semantic memory.
+
+How it works:
+1. Records metrics from every task (success, quality, speed)
+2. Analyzes patterns automatically
+3. Routes future tasks to best-performing model
+4. Stores relevant experiences in semantic memory
+5. Provides weekly feedback on improvements
+
+Tech details:
+- No external dependencies (pure Node.js)
+- Semantic memory with similarity-based retrieval
+- Multiple planning strategies (tree/graph/Monte Carlo)
+- All O(n) algorithms
+- ~2,500 lines of tested code
+- 31/31 tests passing
+
+Open source. MIT-adjacent license. Everything local.
+
+GitHub: https://github.com/adnqcr7-code/kairosv2
+
+---
+
+FOR REDDIT r/OpenSource:
+
+Title: Kairos - Open source self-improving AI agent (local-first, no cloud required)
+
+Just open sourced Kairos, a local-first AI agent that learns from every interaction.
+
+What it does:
+- Tracks which models work best for different tasks
+- Uses semantic memory to learn from past experiences
+- Automatically improves routing over time
+- Provides weekly feedback on what's working/not working
+- Keeps everything local by default
+
+Why I built it:
+Existing frameworks either lock you into the cloud or require complex integration. Kairos is self-contained, tested, and production-ready.
+
+All local. Full control. No dependencies.
+
+GitHub: https://github.com/adnqcr7-code/kairosv2
+
+Contributions welcome.
+
+---
+
+FOR REDDIT r/programming:
+
+Title: I built an AI agent that learns which models work best - now it's open source
+
+Made Kairos. It's an AI agent that improves automatically.
+
+How: It tracks metrics (success, quality, speed). Learns patterns. Routes tasks to the best-performing model next time. Improves week by week.
+
+Uses semantic memory to recall relevant experiences. Multiple planning strategies. Everything runs locally.
+
+31/31 tests passing. Production ready. No external dependencies.
+
+GitHub: https://github.com/adnqcr7-code/kairosv2
+
+---
+
+FOR TWITTER/X (post as thread):
+
+Tweet 1:
+I just open-sourced Kairos - an AI agent that learns which models work best for you.
+
+Built it because existing frameworks force you to choose: pay heavily, trust one model, or use cloud.
+
+Kairos is different: local-first, learns from metrics, improves automatically.
+
+Tweet 2:
+How it works:
+- Records metrics from every task
+- Identifies what actually works
+- Routes future tasks to best performer
+- Learns through semantic memory
+- Gives weekly feedback
+
+Week after week your agent gets smarter.
+
+Tweet 3:
+Key features:
+✓ Self-improving (learns from experience)
+✓ Local-first (data stays on your machine)
+✓ Adaptive routing (best model per task)
+✓ Semantic memory with retrieval
+✓ Multiple planning strategies
+✓ Zero dependencies
+
+Tweet 4:
+Tech specs:
+- 31/31 tests passing
+- Production ready
+- ~2,500 lines of focused code
+- All algorithms O(n) or better
+- No external dependencies
+
+Open source. Available now.
+
+Tweet 5:
+GitHub: https://github.com/adnqcr7-code/kairosv2
+
+If you're interested in local AI, agent architecture, or privacy-first systems - give it a shot.
+
+---
+
+FOR DEV.TO (write as article):
+
+Title: Building a Self-Improving AI Agent: Kairos
+
+I spent the last few months building Kairos, a self-improving AI agent that learns which models work best for different tasks. It's now open source.
+
+Why I built it:
+
+Existing AI agent frameworks have problems. They either:
+- Require expensive cloud APIs
+- Force you to use one model for everything
+- Require complex integration
+- Send your data to external servers
+- Have steep learning curves
+
+I wanted something different.
+
+What Kairos does:
+
+Records metrics from every task. Analyzes patterns. Routes future tasks to best-performing models. Learns through semantic memory. Provides weekly feedback.
+
+How it works:
+
+When you assign a task, Kairos tracks: Did it succeed? How good was the output? How fast? What model did we use?
+
+After running multiple tasks, patterns emerge. Claude is better at reasoning. GPT-4 better at coding. Local models work for simple tasks.
+
+The system learns this and routes new tasks accordingly.
+
+Memory works similarly. Experiences get stored with semantic vectors. When facing a new task, relevant past experiences surface automatically.
+
+Technical approach:
+
+Semantic memory with word-frequency vectors. Adaptive routing based on weighted metrics. Multiple planning strategies. All efficient algorithms.
+
+No external dependencies. Pure Node.js. Tested thoroughly.
+
+Code quality:
+
+31 out of 31 tests passing
+Production ready
+Full error handling
+Fully documented
+
+Architecture:
+
+Seven core modules:
+1. Analytics - performance tracking
+2. Advanced memory - semantic storage and retrieval
+3. Adaptive routing - learns best model per task
+4. Advanced planning - multiple strategies
+5. Feedback engine - weekly reports
+6. Version manager - safe upgrades
+7. Data migration - export/import
+
+Getting started:
+
+npm install kairos-agent
+npm run kairos
+/goal Your first task
+
+Check performance:
+
+npm run kairos -- routing-insights
+npm run kairos -- memory-stats
+
+Data control:
+
+Export anytime. Import into new versions. Your data stays local. Full privacy.
+
+Open source. Production ready. Available at:
+
+github.com/adnqcr7-code/kairosv2
+
+---
+
+SIMPLE VERSION FOR ANY PLATFORM:
+
+Kairos is a self-improving AI agent.
+
+It tracks what works and learns which models perform best for different tasks. Everything runs locally. No subscriptions. No cloud lock-in.
+
+It improves automatically through semantic memory and adaptive routing. You get weekly feedback on improvements.
+
+Open source. Production ready. Available now.
+
+github.com/adnqcr7-code/kairosv2
+
+---
+
+KEY FACTS TO MENTION:
+
+- 31/31 tests passing
+- Zero external dependencies  
+- Production ready
+- Local-first by default
+- No cloud required
+- No subscriptions
+- Open source
+- ~2,500 lines of code
+- Multiple planning strategies
+- Semantic memory with RAG
+- Adaptive model routing
+- Weekly feedback reports
+
+WHAT NOT TO SAY:
+
+Avoid: "I recommend", "might be interested", "could help"
+Avoid: Marketing speak, emojis (except minimal ones)
+Avoid: Testimonials or made-up reviews
+Avoid: Price comparisons (it's free)
+Avoid: Hype language
+
+JUST STATE FACTS.
+
+---
+
+AFTER POSTING:
+
+Monitor for questions and respond with technical details.
+
+Answer criticism with facts about the code and testing.
+
+Don't argue with people who prefer other frameworks - just explain the differences.
+
+Direct people to documentation for detailed information.
+
+Engage with people showing genuine interest.

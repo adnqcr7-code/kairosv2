@@ -1,0 +1,48 @@
+{
+  "createdAt": "2026-07-13T21:35:35.180Z",
+  "currentVersion": "2.0.0",
+  "upgrades": [
+    {
+      "timestamp": "2026-07-13T21:35:35.184Z",
+      "fromVersion": "2.0.0",
+      "toVersion": "2.1.0",
+      "notes": "Test upgrade",
+      "dataBackupCreated": false
+    },
+    {
+      "timestamp": "2026-07-13T21:35:56.368Z",
+      "fromVersion": "2.0.0",
+      "toVersion": "2.1.0",
+      "notes": "Test upgrade",
+      "dataBackupCreated": false
+    },
+    {
+      "timestamp": "2026-07-13T21:37:53.212Z",
+      "fromVersion": "2.0.0",
+      "toVersion": "2.1.0",
+      "notes": "Test upgrade",
+      "dataBackupCreated": false
+    }
+  ],
+  "rollbacks": [
+    {
+      "timestamp": "2026-07-13T21:35:35.192Z",
+      "fromVersion": "2.1.0",
+      "toVersion": "2.0.0",
+      "reason": "Test rollback"
+    },
+    {
+      "timestamp": "2026-07-13T21:35:56.380Z",
+      "fromVersion": "2.1.0",
+      "toVersion": "2.0.0",
+      "reason": "Test rollback"
+    },
+    {
+      "timestamp": "2026-07-13T21:37:53.217Z",
+      "fromVersion": "2.1.0",
+      "toVersion": "2.0.0",
+      "reason": "Test rollback"
+    }
+  ],
+  "dataExports": []
+}
