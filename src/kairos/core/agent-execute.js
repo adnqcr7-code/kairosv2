@@ -1,7 +1,7 @@
-// Execution helpers for performing actions during the agent loop.  These
-// functions wrap lower‑level workspace tools, safety checks and tool
-// logging to ensure consistent behaviour across write/read/run/test
-// operations.  Extracted from agent-loop.js to improve modularity.
+// Execution helpers — v2.1 with prompt injection scanning
+//
+// Key improvement: tool outputs (file reads, web fetch, shell output)
+// are scanned for injection patterns before being used in agent context.
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -12,17 +12,8 @@ const { logToolEvent } = require('./tool-log');
 const { webFetch, browserOpen } = require('./web-tools');
 const { addToConversationHistory } = require('./memory');
 const { normalizeAction } = require('./agent-parse');
+const { scanToolOutput } = require('./prompt-sanitizer');
 
-/**
- * Write content to a file safely (with approval and path restrictions).
- * Returns an object describing the outcome.  When approval is
- * declined, completed is false and a message is provided.  On
- * success the resolved path is returned.
- *
- * @param {string} filePath
- * @param {string} content
- * @param {object} flags
- */
 async function writeFileSafe(filePath, content, flags = {}) {
   const resolved = safeResolve(filePath);
   const exists = fs.existsSync(resolved);
@@ -35,26 +26,22 @@ async function writeFileSafe(filePath, content, flags = {}) {
   return { completed: true, path: resolved, review };
 }
 
-/**
- * Execute a single normalised action.  Supports reading and
- * writing files, running shell commands, running tests, fetching
- * URLs, opening a browser, and recording thoughts.  All side effects
- * go through guarded helpers to respect safety policies.
- *
- * @param {object} action The action to execute
- * @param {object} goal The current goal metadata
- * @param {object} flags Additional execution flags
- */
 async function executeAction(action, goal, flags = {}) {
   const normalized = normalizeAction(action);
   const { action: type, params = {} } = normalized;
+
   switch (type) {
     case 'read': {
       const { path: filePath } = params;
       if (!filePath) throw new Error('read action missing "path" parameter');
       const result = readTextFile(filePath);
+      // Scan file content for injection patterns
+      const { content: safeContent, warnings } = scanToolOutput(result.content, 'file-read:' + filePath);
+      if (warnings.length > 0) {
+        logToolEvent({ tool: 'agent.read.security', goalId: goal.id, path: filePath, warnings: warnings.length });
+      }
       logToolEvent({ tool: 'agent.read', goalId: goal.id, path: filePath, completed: true });
-      return { success: true, output: result.content, action: type };
+      return { success: true, output: safeContent, action: type, _warnings: warnings };
     }
     case 'write': {
       const { path: filePath, content } = params;
@@ -65,14 +52,16 @@ async function executeAction(action, goal, flags = {}) {
       if (!result.completed) {
         return { success: false, output: result.message, action: type };
       }
-      return { success: true, output: `Wrote ${filePath}`, action: type };
+      return { success: true, output: 'Wrote ' + filePath, action: type };
     }
     case 'run': {
       const { command } = params;
       if (!command) throw new Error('run action missing "command" parameter');
       const result = await runReviewedCommand(command, flags);
       logToolEvent({ tool: 'agent.run', goalId: goal.id, command, completed: result.completed });
-      return { success: result.completed, output: result.stdout || result.stderr, action: type };
+      const output = result.stdout || result.stderr || '';
+      const { content: safeOutput } = scanToolOutput(output, 'shell:' + command);
+      return { success: result.completed, output: safeOutput, action: type };
     }
     case 'test': {
       const { command = 'npm test' } = params || {};
@@ -84,12 +73,18 @@ async function executeAction(action, goal, flags = {}) {
       const { url, maxBytes, timeoutMs } = params || {};
       if (!url) throw new Error('web_fetch action missing "url" parameter');
       const result = await webFetch(url, flags, { maxBytes, timeoutMs });
+      const output = result.output || '';
+      const { content: safeOutput, warnings } = scanToolOutput(output, 'web-fetch:' + url);
+      if (warnings.length > 0) {
+        logToolEvent({ tool: 'agent.web_fetch.security', goalId: goal.id, url, warnings: warnings.length });
+      }
       return {
         success: result.completed,
-        output: result.output,
+        output: safeOutput,
         action: type,
         statusCode: result.statusCode,
-        finalUrl: result.finalUrl
+        finalUrl: result.finalUrl,
+        _warnings: warnings
       };
     }
     case 'browser_open': {
@@ -99,7 +94,7 @@ async function executeAction(action, goal, flags = {}) {
       const result = await browserOpen(openTarget, flags, { allowRemote });
       return {
         success: result.completed,
-        output: result.output || `Opened ${result.target}`,
+        output: result.output || 'Opened ' + result.target,
         action: type,
         target: result.target
       };
@@ -110,10 +105,10 @@ async function executeAction(action, goal, flags = {}) {
       if (isQuestion) {
         addToConversationHistory('assistant', reasoning, { goalId: goal.id, isQuestion: true });
       }
-      return { success: true, output: `Thought: ${reasoning || 'No reasoning provided'}`, action: type, isQuestion };
+      return { success: true, output: 'Thought: ' + (reasoning || 'No reasoning provided'), action: type, isQuestion };
     }
     default:
-      throw new Error(`Unknown action type: ${type}`);
+      throw new Error('Unknown action type: ' + type);
   }
 }
 

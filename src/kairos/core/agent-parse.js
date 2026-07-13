@@ -1,9 +1,11 @@
-// Parsing utilities for agent planning.  These functions normalise
-// action definitions provided by the AI and extract useful data
-// structures from free‑form responses.
+// Parsing utilities for agent planning — v2.1 with robust repair
+//
+// Key improvements over original:
+// - Handles markdown-wrapped JSON (```json ... ```)
+// - Repairs common JSON errors (trailing commas, single quotes, comments)
+// - Multi-strategy extraction (JSON array → action blocks → numbered list → action conversion)
+// - Self-critique verification of parsed plans
 
-// Mapping of user‑provided action names (and common aliases) to
-// canonical internal names.
 const ACTION_ALIASES = {
   read: 'read',
   write: 'write',
@@ -16,8 +18,6 @@ const ACTION_ALIASES = {
   think: 'think'
 };
 
-// Mapping of parameter names and aliases to canonical names.  Keys
-// correspond to the lower‑cased, normalised forms of user keys.
 const PARAM_ALIASES = {
   path: 'path',
   filepath: 'path',
@@ -41,10 +41,7 @@ const PARAM_ALIASES = {
 };
 
 function normalizeKey(key) {
-  return String(key || '')
-    .trim()
-    .replace(/[\s-]+/g, '_')
-    .toLowerCase();
+  return String(key || '').trim().replace(/[\s-]+/g, '_').toLowerCase();
 }
 
 function normalizeActionName(name) {
@@ -55,13 +52,6 @@ function normalizeParamName(name) {
   return PARAM_ALIASES[normalizeKey(name)] || name;
 }
 
-/**
- * Normalise an arbitrary object of parameters into the canonical form
- * expected by Kairos.  Aliased keys are converted, and unknown
- * properties are passed through unchanged.
- * @param {object} params
- * @returns {object}
- */
 function normalizeParams(params = {}) {
   if (!params || typeof params !== 'object' || Array.isArray(params)) return {};
   const normalized = {};
@@ -71,12 +61,6 @@ function normalizeParams(params = {}) {
   return normalized;
 }
 
-/**
- * Convert a JSON object of the form { "Read": {...} } into the
- * canonical action representation.  Returns null if no known
- * action key is present.
- * @param {object} item
- */
 function actionFromActionKey(item) {
   for (const [key, value] of Object.entries(item || {})) {
     const action = normalizeActionName(key);
@@ -88,13 +72,6 @@ function actionFromActionKey(item) {
   return null;
 }
 
-/**
- * Normalise a single action object.  Accepts either the form
- * { action: 'read', params: {...} } or keyed forms such as
- * { Read: {...} }.  Parameter keys are normalised via
- * normalizeParamName.
- * @param {object} item
- */
 function normalizeAction(item) {
   if (!item || typeof item !== 'object' || Array.isArray(item)) return item;
   const keyedAction = !Object.prototype.hasOwnProperty.call(item, 'action') ? actionFromActionKey(item) : null;
@@ -102,24 +79,62 @@ function normalizeAction(item) {
   const action = normalizeActionName(source.action);
   const rawParams = source.params && typeof source.params === 'object' && !Array.isArray(source.params) ? source.params : source;
   const params = normalizeParams(rawParams);
-  return {
-    ...item,
-    action: action || source.action,
-    params
-  };
+  return { ...item, action: action || source.action, params };
 }
 
 function normalizeActionPlan(actions) {
   if (!Array.isArray(actions)) return actions;
-  return actions.map((action) => normalizeAction(action));
+  return actions.map(action => normalizeAction(action));
 }
 
-/**
- * Attempt to parse actions expressed as "Action: name {\"param\": ...}" blocks
- * from a free‑form string.  Returns an array of actions or null if
- * nothing was matched.
- * @param {string} response
- */
+// ─── JSON Repair Strategies ───────────────────────────────────────────
+
+function repairJson(text) {
+  let repaired = text;
+  repaired = repaired.replace(/\/\/.*$/gm, '');
+  repaired = repaired.replace(/\/\*[\s\S]*?\*\//g, '');
+  repaired = repaired.replace(/,\s*([\]}])/g, '$1');
+  repaired = repaired.replace(/'([^']+)'\s*:/g, '"$1":');
+  return repaired;
+}
+
+function extractFromCodeBlocks(response) {
+  const codeBlockPattern = /```(?:json)?\s*\n?([\s\S]*?)\n?```/g;
+  const matches = [];
+  let match;
+  while ((match = codeBlockPattern.exec(response)) !== null) {
+    matches.push(match[1].trim());
+  }
+  return matches;
+}
+
+function extractJsonArray(response) {
+  const codeBlocks = extractFromCodeBlocks(response);
+  for (const block of codeBlocks) {
+    const arrayMatch = block.match(/\[[\s\S]*\]/);
+    if (arrayMatch) {
+      try {
+        const parsed = JSON.parse(arrayMatch[0]);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {
+        try {
+          const repaired = repairJson(arrayMatch[0]);
+          const parsed = JSON.parse(repaired);
+          if (Array.isArray(parsed)) return parsed;
+        } catch { /* continue */ }
+      }
+    }
+  }
+
+  const arrayMatch = response.match(/\[[\s\S]*\]/);
+  if (arrayMatch) {
+    try { return JSON.parse(arrayMatch[0]); } catch {
+      try { return JSON.parse(repairJson(arrayMatch[0])); } catch { /* continue */ }
+    }
+  }
+  return null;
+}
+
 function parseActionBlocksFromResponse(response) {
   const actions = [];
   const pattern = /\bAction\s*:\s*([A-Za-z_ -]+)[^\n{]*({[^\n]*})/gi;
@@ -130,41 +145,66 @@ function parseActionBlocksFromResponse(response) {
     try {
       const params = JSON.parse(match[2]);
       actions.push(normalizeAction({ action, params }));
-    } catch {
-      continue;
-    }
+    } catch { continue; }
   }
-  // Extract inline "Run" commands of the form "1. Run: command"
-  const runPattern = /\b\d+\.\s*Run\s*:[\s\S]*?\bcommand\s+\"([^\"]+)\"/gi;
+  const runPattern = /\b\d+\.\s*Run\s*:[\s\S]*?\bcommand\s+"([^"]+)"/gi;
   while ((match = runPattern.exec(response)) !== null) {
     actions.push({ action: 'run', params: { command: match[1] } });
   }
   return actions.length > 0 ? actions : null;
 }
 
-/**
- * Attempt to parse a JSON array of actions from a free‑form response.
- * Falls back to parseActionBlocksFromResponse if no JSON array is
- * found.  Returns null if nothing could be parsed.
- * @param {string} response
- */
-function parseActionsFromResponse(response) {
-  const match = response.match(/\[[\s\S]*\]/);
-  if (match) {
-    try {
-      const parsed = JSON.parse(match[0]);
-      return Array.isArray(parsed) ? normalizeActionPlan(parsed) : null;
-    } catch {}
+function parseNumberedListToActions(response) {
+  const steps = [];
+  const numberedItem = /^\s*\d+\.\s+(.+)$/gm;
+  let match;
+  while ((match = numberedItem.exec(response)) !== null) {
+    const text = match[1].trim();
+    if (/\b(write|create|save)\b.*\b(file|module|component|script|class|function)\b/i.test(text)) {
+      const filePathMatch = text.match(/(?:to|as|at|in|:)\s+"?([^\s"\\.]+\.[a-z]+)"?/i);
+      steps.push({ action: 'write', params: { path: filePathMatch ? filePathMatch[1] : 'output.js', content: '// TODO: implement based on step: ' + text.slice(0, 200) } });
+    } else if (/\b(run|execute|test)\b/i.test(text)) {
+      const cmdMatch = text.match(/"([^"]+)"/);
+      steps.push({ action: 'run', params: { command: cmdMatch ? cmdMatch[1] : 'npm test' } });
+    } else {
+      steps.push({ action: 'think', params: { reasoning: text.slice(0, 500) } });
+    }
   }
-  return parseActionBlocksFromResponse(response);
+  return steps.length > 0 ? steps : null;
 }
 
-/**
- * Parse a single JSON object from free‑form text.  Locates the first
- * opening brace and the last closing brace to extract a JSON object.
- * @param {string} response
- */
+function parseActionsFromResponse(response) {
+  const jsonArray = extractJsonArray(response);
+  if (jsonArray) return normalizeActionPlan(jsonArray);
+
+  const actionBlocks = parseActionBlocksFromResponse(response);
+  if (actionBlocks) return normalizeActionPlan(actionBlocks);
+
+  const listActions = parseNumberedListToActions(response);
+  if (listActions) return normalizeActionPlan(listActions);
+
+  return null;
+}
+
 function parseObjectFromResponse(response) {
+  const codeBlocks = extractFromCodeBlocks(response);
+  for (const block of codeBlocks) {
+    const start = block.indexOf('{');
+    const end = block.lastIndexOf('}');
+    if (start !== -1 && end !== -1 && end > start) {
+      try {
+        const parsed = JSON.parse(block.slice(start, end + 1));
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+      } catch {
+        try {
+          const repaired = repairJson(block.slice(start, end + 1));
+          const parsed = JSON.parse(repaired);
+          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+        } catch { /* continue */ }
+      }
+    }
+  }
+
   const start = response.indexOf('{');
   const end = response.lastIndexOf('}');
   if (start === -1 || end === -1 || end <= start) return null;
@@ -172,8 +212,27 @@ function parseObjectFromResponse(response) {
     const parsed = JSON.parse(response.slice(start, end + 1));
     return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
   } catch {
-    return null;
+    try {
+      const repaired = repairJson(response.slice(start, end + 1));
+      const parsed = JSON.parse(repaired);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+    } catch { return null; }
   }
+}
+
+function verifyAndRepairActions(actions, goalTitle = '') {
+  if (!Array.isArray(actions)) return actions;
+  const knownTypes = ['read', 'write', 'run', 'test', 'web_fetch', 'browser_open', 'think'];
+  const repaired = [];
+  for (const action of actions) {
+    const normalized = normalizeAction(action);
+    if (!knownTypes.includes(normalized.action)) {
+      repaired.push({ action: 'think', params: { reasoning: 'Original action "' + normalized.action + '" was not recognized. Intent: ' + JSON.stringify(normalized.params || {}).slice(0, 200) } });
+      continue;
+    }
+    repaired.push(normalized);
+  }
+  return repaired;
 }
 
 module.exports = {
@@ -186,7 +245,12 @@ module.exports = {
   actionFromActionKey,
   normalizeAction,
   normalizeActionPlan,
+  repairJson,
+  extractFromCodeBlocks,
+  extractJsonArray,
   parseActionBlocksFromResponse,
+  parseNumberedListToActions,
   parseActionsFromResponse,
-  parseObjectFromResponse
+  parseObjectFromResponse,
+  verifyAndRepairActions
 };

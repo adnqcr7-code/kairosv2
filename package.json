@@ -1,6 +1,6 @@
 {
   "name": "kairos-agent",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Local-first AI agent platform with goal mode, guarded swarms, smart model routing, memory, tools, and a bundled AI skills library. Now with TypeScript, plugin system, gateway architecture, and multi-channel support.",
   "main": "dist/src/kairos/cli.js",
   "types": "dist/src/kairos/types/index.d.ts",

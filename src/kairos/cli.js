@@ -53,7 +53,7 @@ function parseArgs(argv) {
 
 function printHelp() {
   console.log([
-    'Kairos Agent 0.1',
+    'Kairos Agent 2.1',
     '',
     'Commands:',
     '  (no args) opens the Kairos menu',
